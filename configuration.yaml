@@ -24,6 +24,21 @@ input_datetime:
     has_time: true
 
 automation:
+
+  - alias: Test Adhan Playback
+    initial_state: true
+    trigger:
+      platform: time
+      at: "22:59"  # 🕒 Change this to a time a few minutes ahead
+    action:
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.slaapkamer_groep  # 🔁 Replace with your actual speaker entity
+        data:
+          media_content_id: media-source://media_source/local/adhan_fajr.mp3  # 🔁 Use your hosted MP3 URL
+          media_content_type: "music"
+
+
   - alias: Prayer Time Magreb
     initial_state: true
     trigger:
@@ -89,10 +104,13 @@ automation:
         {% set b = states("sensor.isha_adhan").split(":")[1] %}
         {{ b | int == b1 | int and a | int == a1 | int  }}
     action: # the action below is given as an example and is to adapt based on on your homeassistant installation
-      - service: mqtt.publish
-        data_template:
-          topic: 'commande/play/mini'
-          payload: "http://192.168.10.101/Quran/nofajr.mp3"
+      - service: media_player.play_media
+    target:
+      entity_id: media_player.slaapkamer_groep  # Replace with your Nest group
+    data:
+      media_content_id: media-source://media_source/local/adhan_fajr.mp3
+      media_content_type: music
+
 
 
 
